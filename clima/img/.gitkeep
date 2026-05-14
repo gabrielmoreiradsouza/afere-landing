@@ -1,0 +1,9 @@
+# Coloque aqui as imagens do cliente:
+#
+# - logo-cliente.png            (PNG transparente, ~225x130 ideal)
+# - logo-cliente-tight.png      (versão recortada para o header — `sips -c <h> <w>`)
+# - hero.webp                   (foto principal, otimizada)
+# - prod-1.webp ... prod-6.webp (cards de produto)
+# - prova-social.webp           (foto destaque da seção de cases)
+#
+# Nomes podem variar — ajuste no index.html conforme necessário.
