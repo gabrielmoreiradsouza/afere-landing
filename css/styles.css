@@ -1,0 +1,105 @@
+/* ========== Tokens Afere ========== */
+:root {
+  --afere: #3898F8;
+  --afere-soft: rgba(56, 152, 248, 0.08);
+  --afere-dark: #1E40AF;
+  --ink: #0F172A;
+  --mute: #475569;
+  --line: #E2E8F0;
+}
+
+html { scroll-behavior: smooth; }
+body { background: #FFFFFF; color: var(--ink); }
+
+::selection { background: var(--afere); color: #FFFFFF; }
+
+/* ========== Logo claro (footer) ========== */
+.logo-claro {
+  filter: brightness(0) invert(1);
+}
+
+/* ========== Pulsing dot ========== */
+.pulse-dot {
+  animation: pulseDot 2s ease-in-out infinite;
+  box-shadow: 0 0 8px var(--afere);
+}
+@keyframes pulseDot {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.4); opacity: 0.6; }
+}
+
+/* ========== Form elements (light theme) ========== */
+.opt {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 1rem 1.25rem;
+  background: #FFFFFF;
+  border: 1.5px solid var(--line);
+  border-radius: 14px;
+  color: var(--ink);
+  font-weight: 500;
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+.opt:hover {
+  border-color: var(--afere);
+  background: var(--afere-soft);
+  transform: translateX(4px);
+}
+
+.inp {
+  width: 100%;
+  padding: 0.875rem 1rem;
+  background: #FFFFFF;
+  border: 1.5px solid var(--line);
+  border-radius: 12px;
+  color: var(--ink);
+  font-size: 0.95rem;
+  font-family: inherit;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.inp:focus {
+  outline: none;
+  border-color: var(--afere);
+  box-shadow: 0 0 0 3px rgba(56, 152, 248, 0.15);
+}
+.inp::placeholder { color: #94A3B8; }
+
+textarea.inp {
+  resize: vertical;
+  min-height: 96px;
+  font-family: inherit;
+}
+
+/* ========== Reduce motion respect ========== */
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+  html { scroll-behavior: auto; }
+  .pulse-dot { animation: none !important; }
+}
+
+/* ========== Mobile fine-tuning ========== */
+@media (max-width: 640px) {
+  h1 {
+    font-size: clamp(2rem, 8vw, 2.5rem) !important;
+    line-height: 1.1 !important;
+  }
+}
+
+/* ========== Custom scrollbar (subtle) ========== */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #F8FAFC;
+}
+::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 6px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--afere);
+}
