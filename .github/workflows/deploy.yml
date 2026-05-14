@@ -1,0 +1,20 @@
+name: Deploy EasyPanel
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger EasyPanel redeploy
+        run: |
+          curl -fsSL -X POST \
+            "https://easypanel.moreirads.cloud/api/trpc/services.app.deployService" \
+            -H "Authorization: Bearer ${{ secrets.EASYPANEL_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            -d '{"json":{"projectName":"lp-mds","serviceName":"afere"}}'
+          echo ""
+          echo "✅ Deploy disparado no EasyPanel"
