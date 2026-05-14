@@ -82,25 +82,11 @@ function orcamentoForm() {
         `*Demanda:* ${demandaTxt}\n` +
         (a.msg ? `\n*Detalhes:* ${a.msg}` : '');
 
+      // Dispara fireLead ANTES de abrir o WhatsApp (mesmo eventID em GA4+Meta+Ads)
+      try { if (window.fireLead) window.fireLead('form_orcamento_eng_clinica'); } catch (e) {}
+
       const url = 'https://wa.me/5531984130791?text=' + encodeURIComponent(texto);
       window.open(url, '_blank', 'noopener');
-
-      // dispara evento customizado pra tracking (GA4/Meta)
-      try {
-        window.dataLayer = window.dataLayer || [];
-        window.dataLayer.push({
-          event: 'lead_qualificado',
-          tipo_estabelecimento: a.tipo,
-          tipo_demanda: a.demanda
-        });
-        if (typeof gtag === 'function') {
-          gtag('event', 'lead_qualificado', {
-            tipo_estabelecimento: a.tipo,
-            tipo_demanda: a.demanda
-          });
-        }
-        if (typeof fbq !== 'undefined') fbq('track', 'Lead');
-      } catch (e) {}
     }
   };
 }

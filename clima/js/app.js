@@ -82,24 +82,11 @@ function orcamentoForm() {
         `*Serviço desejado:* ${demandaTxt}\n` +
         (a.msg ? `\n*Detalhes:* ${a.msg}` : '');
 
+      // Dispara fireLead ANTES de abrir o WhatsApp (mesmo eventID em GA4+Meta+Ads)
+      try { if (window.fireLead) window.fireLead('form_orcamento_climatizacao'); } catch (e) {}
+
       const url = 'https://wa.me/5531984130791?text=' + encodeURIComponent(texto);
       window.open(url, '_blank', 'noopener');
-
-      try {
-        window.dataLayer = window.dataLayer || [];
-        window.dataLayer.push({
-          event: 'lead_qualificado',
-          tipo_ambiente: a.tipo,
-          tipo_servico: a.demanda
-        });
-        if (typeof gtag === 'function') {
-          gtag('event', 'lead_qualificado', {
-            tipo_ambiente: a.tipo,
-            tipo_servico: a.demanda
-          });
-        }
-        if (typeof fbq !== 'undefined') fbq('track', 'Lead');
-      } catch (e) {}
     }
   };
 }
