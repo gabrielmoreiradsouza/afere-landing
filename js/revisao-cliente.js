@@ -47,6 +47,8 @@
       sel.innerHTML = state.cliente.secoes
         .map((s) => `<option value="${s}">${s}</option>`)
         .join('');
+      // padrão: celular (70%+ dos visitantes da LP serão mobile)
+      setView('mobile');
     } catch (e) {
       document.body.innerHTML = `<div style="padding:40px;font-family:sans-serif;color:#fff;background:#0a0a0a;min-height:100vh;text-align:center"><h1>Acesso inválido</h1><p>${e.message}</p></div>`;
     }

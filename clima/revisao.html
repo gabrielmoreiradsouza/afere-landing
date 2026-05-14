@@ -62,13 +62,11 @@
       </div>
       <div class="flex items-center gap-2">
         <div class="flex bg-[#1a1a1a] rounded-full p-1 border border-[#2a2a2a]">
-          <button class="toggle-btn active text-xs px-3 py-1 rounded-full" data-view="desktop" id="btn-desktop">
-            <svg class="inline w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
-            Desktop
+          <button class="toggle-btn active text-xs px-3 py-1 rounded-full" data-view="mobile" id="btn-mobile">
+            📱 Celular
           </button>
-          <button class="toggle-btn text-xs px-3 py-1 rounded-full text-[#a3a3a3]" data-view="mobile" id="btn-mobile">
-            <svg class="inline w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="6" y="2" width="12" height="20" rx="2"/><path d="M11 18h2"/></svg>
-            Mobile
+          <button class="toggle-btn text-xs px-3 py-1 rounded-full text-[#a3a3a3]" data-view="desktop" id="btn-desktop">
+            🖥️ Computador
           </button>
         </div>
         <button id="panel-toggle-btn" class="panel-toggle btn-ghost text-xs items-center gap-1.5">
@@ -84,7 +82,7 @@
 
     <!-- VIEWPORT DA LP -->
     <main class="flex-1 overflow-auto p-4 lg:p-6 flex justify-center">
-      <div class="iframe-shell desktop h-full" id="iframe-shell">
+      <div class="iframe-shell mobile h-full" id="iframe-shell">
         <iframe id="lp-iframe" src="about:blank" title="Landing page em revisão"></iframe>
       </div>
     </main>
@@ -104,7 +102,15 @@
         <div class="flex items-start gap-2">
           <svg class="w-4 h-4 text-[#A8E61C] flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
           <div class="text-xs text-[#a3a3a3] leading-relaxed">
-            <strong class="text-white">Como funciona:</strong> escolha a seção da página, descreva o ajuste e (opcional) anexe imagens de referência. Quando terminar, clique em <strong class="text-[#A8E61C]">Enviar revisão</strong> para que possamos receber tudo de uma vez.
+            <strong class="text-white">É bem simples:</strong>
+            <ol class="list-decimal ml-4 mt-1.5 space-y-1">
+              <li>Clique em <strong class="text-[#A8E61C]">+ Novo comentário</strong></li>
+              <li>Escolha em que parte da página quer mudar algo</li>
+              <li>Diga se é uma <em>imagem</em>, <em>texto</em>, <em>botão</em> ou outra coisa</li>
+              <li>Escreva o que precisa ser diferente</li>
+              <li>Quando terminar tudo, clique em <strong class="text-[#A8E61C]">Enviar revisão</strong></li>
+            </ol>
+            <div class="mt-2 text-[#737373]">Você pode ver a página como ela aparece no <strong>celular</strong> (padrão) ou no <strong>computador</strong> — use os botões lá em cima.</div>
           </div>
         </div>
       </div>
@@ -144,24 +150,41 @@
       </div>
 
       <div>
-        <label class="text-xs text-[#a3a3a3] mb-1.5 block font-semibold uppercase tracking-wider">Seção da página</label>
+        <label class="text-xs text-[#a3a3a3] mb-1.5 block font-semibold uppercase tracking-wider">Em que parte da página?</label>
         <select class="inp" id="f-secao"></select>
-      </div>
-
-      <div>
-        <label class="text-xs text-[#a3a3a3] mb-1.5 block font-semibold uppercase tracking-wider">Tipo de ajuste</label>
-        <div class="grid grid-cols-5 gap-1.5">
-          <button class="tipo-btn inp text-xs py-2 hover:border-[#A8E61C]" data-tipo="foto">Foto</button>
-          <button class="tipo-btn inp text-xs py-2 hover:border-[#A8E61C]" data-tipo="copy">Copy</button>
-          <button class="tipo-btn inp text-xs py-2 hover:border-[#A8E61C]" data-tipo="cta">CTA</button>
-          <button class="tipo-btn inp text-xs py-2 hover:border-[#A8E61C]" data-tipo="layout">Layout</button>
-          <button class="tipo-btn inp text-xs py-2 hover:border-[#A8E61C]" data-tipo="outro">Outro</button>
-        </div>
+        <div class="text-[11px] text-[#737373] mt-1">Escolha a parte da página onde você quer mudar algo.</div>
       </div>
 
       <div>
         <label class="text-xs text-[#a3a3a3] mb-1.5 block font-semibold uppercase tracking-wider">O que você quer mudar?</label>
-        <textarea rows="4" class="inp resize-none" id="f-descricao" placeholder="Ex.: trocar a foto desse bloco por uma de chumbador real, sem ser parafuso genérico"></textarea>
+        <div class="grid grid-cols-2 gap-2">
+          <button class="tipo-btn inp text-left py-3 px-3 hover:border-[#A8E61C]" data-tipo="foto">
+            <div class="text-base">📸 Imagem</div>
+            <div class="text-[11px] text-[#737373] mt-0.5">Trocar ou ajustar uma foto</div>
+          </button>
+          <button class="tipo-btn inp text-left py-3 px-3 hover:border-[#A8E61C]" data-tipo="copy">
+            <div class="text-base">✏️ Texto</div>
+            <div class="text-[11px] text-[#737373] mt-0.5">Mudar uma palavra ou frase</div>
+          </button>
+          <button class="tipo-btn inp text-left py-3 px-3 hover:border-[#A8E61C]" data-tipo="cta">
+            <div class="text-base">🔘 Botão</div>
+            <div class="text-[11px] text-[#737373] mt-0.5">Texto ou destino do botão</div>
+          </button>
+          <button class="tipo-btn inp text-left py-3 px-3 hover:border-[#A8E61C]" data-tipo="layout">
+            <div class="text-base">🎨 Visual</div>
+            <div class="text-[11px] text-[#737373] mt-0.5">Cor, tamanho ou posição</div>
+          </button>
+          <button class="tipo-btn inp text-left py-3 px-3 hover:border-[#A8E61C] col-span-2" data-tipo="outro">
+            <div class="text-base">💭 Outro</div>
+            <div class="text-[11px] text-[#737373] mt-0.5">Qualquer outra coisa que queira sugerir</div>
+          </button>
+        </div>
+      </div>
+
+      <div>
+        <label class="text-xs text-[#a3a3a3] mb-1.5 block font-semibold uppercase tracking-wider">Conte com suas palavras</label>
+        <textarea rows="4" class="inp resize-none" id="f-descricao" placeholder="Ex.: o título podia falar mais sobre [tema]. Ou: a foto não combina, queria algo mais [característica]."></textarea>
+        <div class="text-[11px] text-[#737373] mt-1">Pode ser bem direto. Se não souber explicar com palavras, escreva qualquer coisa e a gente conversa.</div>
       </div>
 
       <div class="flex justify-end gap-2 pt-2">
