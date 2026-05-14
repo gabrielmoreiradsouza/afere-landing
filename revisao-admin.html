@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Revisão · Admin</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="js/revisao-config.js"></script>
+  <style>
+    :root { color-scheme: dark; }
+    body { font-family: 'Inter', system-ui, sans-serif; background: #0a0a0a; color: #e7e7e7; }
+    .badge { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 999px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+    .badge-foto { background: #1e3a8a40; color: #93c5fd; }
+    .badge-copy { background: #7c2d1240; color: #fdba74; }
+    .badge-cta  { background: #14532d40; color: #86efac; }
+    .badge-layout { background: #581c8740; color: #d8b4fe; }
+    .badge-outro { background: #3f3f4640; color: #d4d4d8; }
+    .badge-pendente { background: #71717a40; color: #d4d4d8; }
+    .badge-andamento { background: #b4530940; color: #fed7aa; }
+    .badge-feito { background: #16653440; color: #86efac; }
+    .card { background: #141414; border: 1px solid #2a2a2a; border-radius: 12px; }
+    .btn { background: #A8E61C; color: #0a0a0a; font-weight: 700; padding: 10px 18px; border-radius: 999px; transition: all .15s; }
+    .btn:hover { box-shadow: 0 0 30px #A8E61C50; }
+    .btn-ghost { background: transparent; color: #a3a3a3; border: 1px solid #2a2a2a; padding: 6px 12px; border-radius: 999px; font-size: 12px; }
+    .btn-ghost:hover { color: #fff; border-color: #A8E61C; }
+    .mono { font-family: 'JetBrains Mono', monospace; font-size: 12px; }
+    .img-thumb { width: 120px; height: 80px; object-fit: cover; border-radius: 6px; border: 1px solid #2a2a2a; cursor: pointer; transition: transform .15s; }
+    .img-thumb:hover { transform: scale(1.05); }
+    select.status-sel { background: #0a0a0a; color: #fff; border: 1px solid #2a2a2a; border-radius: 6px; padding: 4px 8px; font-size: 11px; }
+  </style>
+</head>
+<body class="min-h-screen p-6">
+
+  <div class="max-w-6xl mx-auto">
+    <header class="mb-8 flex items-center justify-between">
+      <div>
+        <div class="text-xs uppercase tracking-widest text-[#A8E61C] font-bold">Moreira DS · Admin</div>
+        <h1 class="text-2xl font-bold mt-1" id="hdr-cliente">carregando…</h1>
+        <a href="" target="_blank" id="hdr-lp-link" class="text-xs text-[#737373] hover:text-[#A8E61C]">— ver LP</a>
+      </div>
+      <div class="flex gap-2">
+        <button class="btn-ghost" id="btn-refresh">Atualizar</button>
+      </div>
+    </header>
+
+    <!-- LISTA DE REVISOES -->
+    <div class="space-y-6" id="lista-revisoes"></div>
+
+    <div id="empty" class="hidden card p-8 text-center text-[#737373]">
+      Ainda não há revisões enviadas por este cliente.
+    </div>
+  </div>
+
+  <!-- MODAL EXPORT -->
+  <div class="fixed inset-0 z-[60] hidden bg-black/80 backdrop-blur-sm items-center justify-center p-4" id="modal-export">
+    <div class="bg-[#141414] border border-[#2a2a2a] rounded-2xl w-full max-w-3xl p-6 space-y-4 max-h-[90vh] flex flex-col">
+      <div class="flex items-center justify-between">
+        <h3 class="text-lg font-bold">Markdown de execução</h3>
+        <div class="flex gap-2">
+          <button class="btn text-sm" id="btn-copy">Copiar</button>
+          <button class="btn-ghost" id="export-close">Fechar</button>
+        </div>
+      </div>
+      <p class="text-xs text-[#a3a3a3]">Cole isso na conversa com o Claude — formato pronto pra ele executar item por item.</p>
+      <pre class="mono bg-[#0a0a0a] p-4 rounded-lg overflow-auto whitespace-pre-wrap flex-1" id="export-content"></pre>
+    </div>
+  </div>
+
+  <!-- LIGHTBOX IMAGEM -->
+  <div class="fixed inset-0 z-[70] hidden bg-black/95 items-center justify-center p-6 cursor-pointer" id="lightbox">
+    <img src="" alt="" class="max-w-full max-h-full" id="lightbox-img" />
+  </div>
+
+  <script src="js/revisao-admin.js"></script>
+</body>
+</html>
