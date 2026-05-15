@@ -24,15 +24,16 @@ document.addEventListener('DOMContentLoaded', () => {
       el.dataset.done = '1';
       const target = parseFloat(el.dataset.target);
       const suffix = el.dataset.suffix || '';
+      const prefix = el.dataset.prefix || '';
       const duration = 1500;
       const start = performance.now();
       function step(now) {
         const t = Math.min((now - start) / duration, 1);
         const eased = 1 - Math.pow(1 - t, 3);
         const val = Math.floor(target * eased);
-        el.textContent = val + suffix;
+        el.textContent = prefix + val + suffix;
         if (t < 1) requestAnimationFrame(step);
-        else el.textContent = target + suffix;
+        else el.textContent = prefix + target + suffix;
       }
       requestAnimationFrame(step);
     });
