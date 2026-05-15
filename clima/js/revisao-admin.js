@@ -117,6 +117,30 @@
         } catch (e) { alert('Erro: ' + e.message); }
       };
     });
+    // bind save resposta_admin
+    cont.querySelectorAll('.resposta-save').forEach((btn) => {
+      btn.onclick = async () => {
+        const id = btn.dataset.id;
+        const ta = cont.querySelector(`textarea.resposta-input[data-id="${id}"]`);
+        const valor = ta ? ta.value.trim() : '';
+        const orig = btn.textContent;
+        btn.textContent = 'Salvando…';
+        btn.disabled = true;
+        try {
+          await api(`/api/admin/comentarios/${id}`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ resposta_admin: valor }),
+          });
+          btn.textContent = '✓ Salvo';
+          setTimeout(() => { btn.textContent = orig; btn.disabled = false; }, 1500);
+        } catch (e) {
+          btn.textContent = orig;
+          btn.disabled = false;
+          alert('Erro: ' + e.message);
+        }
+      };
+    });
     // bind lightbox
     cont.querySelectorAll('.img-thumb').forEach((img) => {
       img.onclick = () => {
@@ -142,6 +166,7 @@
     const statusOpts = ['pendente', 'andamento', 'feito']
       .map((s) => `<option value="${s}" ${s === c.status ? 'selected' : ''}>${s}</option>`)
       .join('');
+    const resposta = c.resposta_admin || '';
     return `
       <div class="bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg p-4">
         <div class="flex items-start justify-between gap-3 mb-2">
@@ -154,6 +179,13 @@
         </div>
         <p class="text-sm text-white/85 leading-relaxed">${escapeHtml(c.descricao)}</p>
         ${thumbs ? `<div class="flex gap-2 flex-wrap mt-3">${thumbs}</div>` : ''}
+        <div class="mt-3 pt-3 border-t border-[#2a2a2a]">
+          <label class="text-[11px] uppercase tracking-wider text-[#A8E61C] font-bold block mb-1.5">✏️ Resposta do admin (visível ao cliente)</label>
+          <textarea class="resposta-input w-full bg-[#0a0a0a] border border-[#2a2a2a] rounded-md p-2 text-sm text-white resize-none" rows="2" data-id="${c.id}" placeholder="Ex: Texto do hero ajustado. Removida menção a 100 km.">${escapeHtml(resposta)}</textarea>
+          <div class="flex justify-end mt-1.5">
+            <button class="btn btn-sm resposta-save" data-id="${c.id}" style="padding: 4px 12px; font-size: 12px;">Salvar resposta</button>
+          </div>
+        </div>
       </div>
     `;
   }

@@ -34,7 +34,10 @@
       const data = await api('/api/cliente');
       state.cliente = data.cliente;
       state.draft = data.draft;
-      state.comentarios = data.comentarios;
+      state.revisoes = data.revisoes || [];
+      // separa comentários: do draft atual (novos) vs já enviados (histórico)
+      state.comentarios = data.comentarios.filter((c) => c.revisao_id === state.draft.id);
+      state.historico = data.comentarios.filter((c) => c.revisao_id !== state.draft.id);
       state.imagensByComment = {};
       data.imagens.forEach((img) => {
         (state.imagensByComment[img.comentario_id] = state.imagensByComment[img.comentario_id] || []).push(img);
@@ -70,12 +73,53 @@
       : `Enviar revisão (${state.comentarios.length})`;
 
     const lista = $('#lista-coments');
+
+    // ===== HISTÓRICO de revisões enviadas (com respostas do admin) =====
+    let historicoHtml = '';
+    const revsEnviadas = state.revisoes.filter((r) => r.status === 'sent').sort((a, b) => a.id - b.id);
+    if (revsEnviadas.length > 0) {
+      historicoHtml = `<div class="text-[11px] uppercase tracking-wider text-[#A8E61C] font-bold mb-2 mt-1">📜 O que já foi enviado e respondido</div>`;
+      revsEnviadas.forEach((rev, idx) => {
+        const cs = state.historico.filter((c) => c.revisao_id === rev.id);
+        if (cs.length === 0) return;
+        historicoHtml += `
+          <details class="bg-[#0f0f0f] border border-[#2a2a2a] rounded-md mb-2" ${idx === revsEnviadas.length - 1 ? 'open' : ''}>
+            <summary class="cursor-pointer p-3 text-xs text-[#a3a3a3] hover:text-white">
+              Revisão #${idx + 1} · ${cs.length} item(s) · enviada em ${formatDate(rev.data_envio || rev.created_at)}
+            </summary>
+            <div class="p-3 pt-0 space-y-2">
+              ${cs.map((c) => {
+                const respondido = c.resposta_admin && c.resposta_admin.trim();
+                return `
+                  <div class="bg-[#1a1a1a] border border-[#2a2a2a] rounded p-2.5">
+                    <div class="flex items-center gap-1.5 flex-wrap mb-1">
+                      <span class="badge badge-${c.tipo}">${c.tipo}</span>
+                      <span class="text-[11px] text-[#a3a3a3]">${escapeHtml(c.secao)}</span>
+                      ${c.status === 'feito' ? '<span class="badge badge-cta">✓ feito</span>' : c.status === 'andamento' ? '<span class="badge badge-copy">em andamento</span>' : '<span class="badge badge-outro">pendente</span>'}
+                    </div>
+                    <p class="text-xs text-white/80 leading-snug mb-2">${escapeHtml(c.descricao)}</p>
+                    ${respondido ? `
+                      <div class="mt-2 pt-2 border-t border-[#2a2a2a] bg-[#A8E61C]/5 -m-2.5 mt-2 p-2.5 rounded-b">
+                        <div class="text-[10px] uppercase tracking-wider text-[#A8E61C] font-bold mb-1">💬 Resposta da Moreira DS</div>
+                        <p class="text-xs text-white/90 leading-snug">${escapeHtml(c.resposta_admin)}</p>
+                      </div>` : `
+                      <div class="text-[10px] text-[#525252] italic">Aguardando resposta da equipe</div>`}
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          </details>
+        `;
+      });
+      historicoHtml += `<div class="text-[11px] uppercase tracking-wider text-[#A8E61C] font-bold mb-2 mt-4">✏️ Novo feedback</div>`;
+    }
+
     if (state.comentarios.length === 0) {
-      lista.innerHTML = '<div class="text-xs text-center text-[#525252] py-8">Nenhum comentário ainda.<br/>Clique em "+ Novo comentário" para começar.</div>';
+      lista.innerHTML = historicoHtml + '<div class="text-xs text-center text-[#525252] py-4">Nenhum comentário novo ainda.<br/>Clique em "+ Novo comentário" para começar.</div>';
       return;
     }
 
-    lista.innerHTML = state.comentarios
+    lista.innerHTML = historicoHtml + state.comentarios
       .map((c) => {
         const imgs = state.imagensByComment[c.id] || [];
         const thumbs = imgs
