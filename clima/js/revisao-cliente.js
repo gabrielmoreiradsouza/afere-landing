@@ -66,24 +66,12 @@
     $('#panel-toggle-count').textContent = state.comentarios.length;
     $('#enviar-count').textContent = state.comentarios.length;
 
-    // FAB mobile: ajusta texto + badge contador conforme estado
-    const fab = document.getElementById('fab-painel');
-    const fabLabel = document.getElementById('fab-painel-label');
-    const fabCount = document.getElementById('fab-painel-count');
-    if (fab && fabLabel && fabCount) {
-      const n = state.comentarios.length;
-      const temHistorico = (state.revisoes || []).some(r => r.status === 'sent');
-      if (n > 0) {
-        fabLabel.textContent = 'Revisar e enviar';
-        fabCount.textContent = n;
-        fabCount.classList.remove('hidden');
-        fab.classList.add('has-novos');
-      } else {
-        fabLabel.textContent = temHistorico ? 'Mandar novo feedback' : 'Começar revisão';
-        fabCount.classList.add('hidden');
-        fab.classList.remove('has-novos');
-      }
-    }
+    // Toolbar: atualiza botão Aprovar conforme estado
+    if (window._atualizaBotaoAprovar) window._atualizaBotaoAprovar();
+    // Esconde botão histórico se não tem nada enviado ainda
+    const temHistorico = (state.revisoes || []).some(r => r.status === 'sent');
+    const btnHist = document.getElementById('btn-historico');
+    if (btnHist) btnHist.disabled = !temHistorico;
 
     const enviarBtn = $('#btn-enviar');
     enviarBtn.disabled = state.comentarios.length === 0;
@@ -227,9 +215,79 @@
   // ===========================================================
   $('#panel-toggle-btn').onclick = () => $('#panel').classList.add('open');
   $('#panel-close-btn').onclick = () => $('#panel').classList.remove('open');
-  // FAB mobile: também abre painel
-  const fab = document.getElementById('fab-painel');
-  if (fab) fab.onclick = () => $('#panel').classList.add('open');
+
+  // ===========================================================
+  // TOOLBAR — 3 botões de ação principais
+  // ===========================================================
+  const btnHistorico = document.getElementById('btn-historico');
+  const btnNovoFb = document.getElementById('btn-novo-feedback');
+  const btnAprovar = document.getElementById('btn-aprovar');
+
+  if (btnHistorico) btnHistorico.onclick = () => {
+    $('#panel').classList.add('open');
+    // scroll pro bloco de histórico
+    setTimeout(() => {
+      const lista = $('#lista-coments');
+      if (lista) lista.scrollTop = 0;
+      // abre o primeiro details (revisão mais recente)
+      const det = lista?.querySelector('details');
+      if (det) det.open = true;
+    }, 200);
+  };
+
+  if (btnNovoFb) btnNovoFb.onclick = () => {
+    $('#panel').classList.add('open');
+    // abre direto o modal de novo comentário
+    setTimeout(() => {
+      const btn = document.getElementById('btn-novo-coment');
+      if (btn) btn.click();
+    }, 250);
+  };
+
+  if (btnAprovar) btnAprovar.onclick = async () => {
+    if (state.cliente?.aprovado_em) {
+      alert(`✓ Você já aprovou esta entrega em ${formatDate(state.cliente.aprovado_em)}. Se precisar de mais ajustes, use "Mandar novo feedback".`);
+      return;
+    }
+    const ok = confirm(
+      'Aprovar a entrega significa que você está satisfeito com a versão atual da landing page.\n\n' +
+      'Você ainda pode mandar mais feedback depois, mas a aprovação marca esse momento como entrega validada.\n\n' +
+      'Confirmar aprovação?'
+    );
+    if (!ok) return;
+    btnAprovar.disabled = true;
+    btnAprovar.querySelector('span').textContent = 'Aprovando...';
+    try {
+      const data = await api('/api/cliente/aprovar', { method: 'POST', headers: { 'Content-Type': 'application/json' } });
+      state.cliente.aprovado_em = data.aprovado_em;
+      atualizaBotaoAprovar();
+      // Tela de sucesso reusada
+      $('#tela-sucesso').classList.remove('hidden');
+      $('#tela-sucesso').classList.add('flex');
+      $('#tela-sucesso h2').textContent = '✓ Entrega aprovada!';
+      $('#tela-sucesso p').textContent = 'Obrigado pela confiança. Seguimos com a manutenção da página e qualquer ajuste futuro é só mandar pelo botão "Mandar novo feedback".';
+    } catch (e) {
+      alert('Erro ao aprovar: ' + e.message);
+      btnAprovar.disabled = false;
+      atualizaBotaoAprovar();
+    }
+  };
+
+  function atualizaBotaoAprovar() {
+    if (!btnAprovar) return;
+    const span = btnAprovar.querySelector('span');
+    if (state.cliente?.aprovado_em) {
+      btnAprovar.classList.add('action-btn-aprovado');
+      btnAprovar.disabled = false; // permite clicar pra ver msg
+      span.textContent = `✓ Aprovado em ${formatDate(state.cliente.aprovado_em).split(',')[0]}`;
+    } else {
+      btnAprovar.classList.remove('action-btn-aprovado');
+      btnAprovar.disabled = false;
+      span.textContent = 'Aprovar entrega';
+    }
+  }
+  // expor pro renderTudo chamar após load
+  window._atualizaBotaoAprovar = atualizaBotaoAprovar;
 
   // ===========================================================
   // MODAL NOVO COMENTARIO

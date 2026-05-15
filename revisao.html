@@ -58,21 +58,27 @@
       .panel { transform: none !important; }
       .fab-painel { display: none !important; }
     }
-    /* FAB chama atenção no mobile pra abrir revisão */
-    .fab-painel {
-      position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%);
-      background: #A8E61C; color: #0a0a0a; font-weight: 700;
-      padding: 12px 24px; border-radius: 999px;
-      box-shadow: 0 8px 30px rgba(168,230,28,0.4), 0 0 0 4px #A8E61C20;
-      z-index: 40; align-items: center; gap: 8px; font-size: 14px;
-      display: none; transition: all .2s;
-      animation: fab-pulse 2s ease-in-out infinite;
+    /* Botões da toolbar de ações */
+    .action-btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+      padding: 10px 14px; border-radius: 8px;
+      background: #1a1a1a; color: #e7e7e7; border: 1px solid #2a2a2a;
+      font-size: 13px; font-weight: 600; text-align: center;
+      transition: all .15s; cursor: pointer;
+      min-height: 44px;
     }
-    .fab-painel:hover { transform: translateX(-50%) translateY(-2px); }
-    .fab-painel.has-novos { background: #f59e0b; }
-    @keyframes fab-pulse {
-      0%, 100% { box-shadow: 0 8px 30px rgba(168,230,28,0.4), 0 0 0 4px #A8E61C20; }
-      50% { box-shadow: 0 8px 30px rgba(168,230,28,0.6), 0 0 0 8px #A8E61C10; }
+    .action-btn:hover:not(:disabled) { background: #222; border-color: #3a3a3a; transform: translateY(-1px); }
+    .action-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .action-btn-primary { background: #A8E61C; color: #0a0a0a; border-color: #A8E61C; }
+    .action-btn-primary:hover:not(:disabled) { background: #c4f04a; border-color: #c4f04a; box-shadow: 0 4px 20px rgba(168,230,28,0.3); }
+    .action-btn-success { background: #14532d; color: #86efac; border-color: #166534; }
+    .action-btn-success:hover:not(:disabled) { background: #166534; color: #bbf7d0; }
+    .action-btn-aprovado { background: #14532d; color: #86efac; border-color: #166534; cursor: default; }
+    .action-btn span { line-height: 1.2; }
+    @media (max-width: 640px) {
+      .action-btn { font-size: 11px; padding: 8px 6px; flex-direction: column; gap: 3px; }
+      .action-btn span { font-size: 10px; }
+      .action-btn svg { width: 16px; height: 16px; }
     }
   </style>
 </head>
@@ -103,12 +109,23 @@
     </div>
   </header>
 
-  <!-- FAB mobile: abre painel de revisão (visível só em <lg) -->
-  <button id="fab-painel" class="fab-painel" aria-label="Abrir minha revisão">
-    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-    <span id="fab-painel-label">Mandar feedback</span>
-    <span id="fab-painel-count" class="hidden bg-[#0a0a0a] text-white text-xs px-2 py-0.5 rounded-full"></span>
-  </button>
+  <!-- TOOLBAR DE AÇÕES (fora do iframe, sempre visível) -->
+  <div class="bg-[#0a0a0a] border-b border-[#2a2a2a] px-3 py-2.5">
+    <div class="max-w-3xl mx-auto grid grid-cols-3 gap-2">
+      <button id="btn-historico" class="action-btn" data-action="historico">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9c-2.83 0-5.36 1.31-7 3.36L3 9"/><path d="M3 4v5h5"/><path d="M12 7v5l3 2"/></svg>
+        <span>Histórico de ajustes</span>
+      </button>
+      <button id="btn-novo-feedback" class="action-btn action-btn-primary" data-action="novo">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+        <span>Mandar novo feedback</span>
+      </button>
+      <button id="btn-aprovar" class="action-btn action-btn-success" data-action="aprovar">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="m5 13 4 4L19 7"/></svg>
+        <span>Aprovar entrega</span>
+      </button>
+    </div>
+  </div>
 
   <!-- LAYOUT -->
   <div class="flex h-[calc(100vh-57px)]">
@@ -251,6 +268,6 @@
     </div>
   </div>
 
-  <script src="js/revisao-cliente.js?v=3"></script>
+  <script src="js/revisao-cliente.js?v=4"></script>
 </body>
 </html>
