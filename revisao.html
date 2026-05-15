@@ -41,12 +41,38 @@
     .img-thumb { width: 60px; height: 60px; object-fit: cover; border-radius: 6px; border: 1px solid #2a2a2a; }
     @media (max-width: 1023px) {
       .panel-toggle { display: flex; }
-      .panel { position: fixed; right: 0; top: 0; bottom: 0; width: 100%; max-width: 420px; z-index: 50; transform: translateX(100%); transition: transform .25s ease; }
+      /* Painel mobile ocupa tela inteira */
+      .panel { position: fixed; right: 0; top: 0; bottom: 0; left: 0; width: 100%; max-width: 100%; z-index: 50; transform: translateX(100%); transition: transform .25s ease; }
       .panel.open { transform: translateX(0); }
+      /* Toggle Celular/Computador escondido no mobile (já é mobile) */
+      .viewport-toggle { display: none !important; }
+      /* CTA flutuante fixo embaixo */
+      .fab-painel { display: flex !important; }
+      /* Diminuir altura do header mobile */
+      header .text-xs.uppercase { font-size: 10px; }
+      /* Iframe shell mobile sem max-width forçada (preenche viewport) */
+      .iframe-shell.mobile { width: 100%; max-width: 100%; }
     }
     @media (min-width: 1024px) {
       .panel-toggle { display: none; }
       .panel { transform: none !important; }
+      .fab-painel { display: none !important; }
+    }
+    /* FAB chama atenção no mobile pra abrir revisão */
+    .fab-painel {
+      position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+      background: #A8E61C; color: #0a0a0a; font-weight: 700;
+      padding: 12px 24px; border-radius: 999px;
+      box-shadow: 0 8px 30px rgba(168,230,28,0.4), 0 0 0 4px #A8E61C20;
+      z-index: 40; align-items: center; gap: 8px; font-size: 14px;
+      display: none; transition: all .2s;
+      animation: fab-pulse 2s ease-in-out infinite;
+    }
+    .fab-painel:hover { transform: translateX(-50%) translateY(-2px); }
+    .fab-painel.has-novos { background: #f59e0b; }
+    @keyframes fab-pulse {
+      0%, 100% { box-shadow: 0 8px 30px rgba(168,230,28,0.4), 0 0 0 4px #A8E61C20; }
+      50% { box-shadow: 0 8px 30px rgba(168,230,28,0.6), 0 0 0 8px #A8E61C10; }
     }
   </style>
 </head>
@@ -61,7 +87,7 @@
         <div class="text-sm" id="hdr-cliente-nome">carregando…</div>
       </div>
       <div class="flex items-center gap-2">
-        <div class="flex bg-[#1a1a1a] rounded-full p-1 border border-[#2a2a2a]">
+        <div class="viewport-toggle flex bg-[#1a1a1a] rounded-full p-1 border border-[#2a2a2a]">
           <button class="toggle-btn active text-xs px-3 py-1 rounded-full" data-view="mobile" id="btn-mobile">
             📱 Celular
           </button>
@@ -76,6 +102,13 @@
       </div>
     </div>
   </header>
+
+  <!-- FAB mobile: abre painel de revisão (visível só em <lg) -->
+  <button id="fab-painel" class="fab-painel" aria-label="Abrir minha revisão">
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    <span id="fab-painel-label">Mandar feedback</span>
+    <span id="fab-painel-count" class="hidden bg-[#0a0a0a] text-white text-xs px-2 py-0.5 rounded-full"></span>
+  </button>
 
   <!-- LAYOUT -->
   <div class="flex h-[calc(100vh-57px)]">
@@ -218,6 +251,6 @@
     </div>
   </div>
 
-  <script src="js/revisao-cliente.js?v=2"></script>
+  <script src="js/revisao-cliente.js?v=3"></script>
 </body>
 </html>

@@ -66,6 +66,25 @@
     $('#panel-toggle-count').textContent = state.comentarios.length;
     $('#enviar-count').textContent = state.comentarios.length;
 
+    // FAB mobile: ajusta texto + badge contador conforme estado
+    const fab = document.getElementById('fab-painel');
+    const fabLabel = document.getElementById('fab-painel-label');
+    const fabCount = document.getElementById('fab-painel-count');
+    if (fab && fabLabel && fabCount) {
+      const n = state.comentarios.length;
+      const temHistorico = (state.revisoes || []).some(r => r.status === 'sent');
+      if (n > 0) {
+        fabLabel.textContent = 'Revisar e enviar';
+        fabCount.textContent = n;
+        fabCount.classList.remove('hidden');
+        fab.classList.add('has-novos');
+      } else {
+        fabLabel.textContent = temHistorico ? 'Mandar novo feedback' : 'Começar revisão';
+        fabCount.classList.add('hidden');
+        fab.classList.remove('has-novos');
+      }
+    }
+
     const enviarBtn = $('#btn-enviar');
     enviarBtn.disabled = state.comentarios.length === 0;
     enviarBtn.textContent = state.comentarios.length === 0
@@ -208,6 +227,9 @@
   // ===========================================================
   $('#panel-toggle-btn').onclick = () => $('#panel').classList.add('open');
   $('#panel-close-btn').onclick = () => $('#panel').classList.remove('open');
+  // FAB mobile: também abre painel
+  const fab = document.getElementById('fab-painel');
+  if (fab) fab.onclick = () => $('#panel').classList.add('open');
 
   // ===========================================================
   // MODAL NOVO COMENTARIO
